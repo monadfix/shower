@@ -10,7 +10,7 @@ before_install:
   - travis_retry ./nix-cabal new-update
 
 script:
-  - ./nix-cabal new-build all
+  - ./nix-cabal new-test shower-tests
 
 cache:
   directories:

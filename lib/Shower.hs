@@ -3,13 +3,18 @@ module Shower
     showerString
   ) where
 
+import Data.Bifunctor (bimap)
 import Text.Megaparsec (parse, errorBundlePretty)
 import Shower.Parser (pShower)
 import Shower.Printer (showerRender)
 
 shower :: Show a => a -> String
-shower = showerString . show
+shower a =
+  case showerString s of
+    Left _ -> s
+    Right s' -> s'
+  where
+    s = show a
 
-showerString :: String -> String
-showerString s =
-  either (error . errorBundlePretty) showerRender (parse pShower "" s)
+showerString :: String -> Either String String
+showerString s = bimap errorBundlePretty showerRender (parse pShower "" s)
