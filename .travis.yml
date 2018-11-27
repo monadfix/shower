@@ -1,0 +1,18 @@
+language: nix
+
+env:
+  - HC=ghc822
+  - HC=ghc844
+  - HC=ghc861
+
+before_install:
+  - curl https://raw.githubusercontent.com/monadfix/nix-cabal/master/nix-cabal -o nix-cabal && chmod u+x nix-cabal
+  - travis_retry ./nix-cabal new-update
+
+script:
+  - ./nix-cabal new-build all
+
+cache:
+  directories:
+    - ~/.cabal
+    - ~/.ghc
