@@ -1,0 +1,1 @@
+(((),hello,world  ), ('c', "a rather long string that should make both the inner and the outer tuple to overflow; la-la-la"))
