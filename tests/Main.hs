@@ -49,7 +49,7 @@ mkInOutTests = do
           return $ testCase testName $
             case showerString inFile of
               Left parseError -> assertFailure parseError
-              Right s -> assertEqual "" (normalize s) (normalize outFile)
+              Right s -> assertEqual "" (normalize outFile) (normalize s)
       return (testGroup "in/out" testCases)
 
 normalize :: String -> String
@@ -96,4 +96,3 @@ zipInOutFilePaths filePaths =
           ".in"  -> go (accBadExt, (name, p) : accInExt, accOutExt) ps
           ".out" -> go (accBadExt, accInExt, (name, p) : accOutExt) ps
           _ -> go (p:accBadExt, accInExt, accOutExt) ps
-
