@@ -50,4 +50,4 @@ showerCharLit' = PP.text . show
 
 showerRender :: ShowerDoc -> String
 showerRender (SD showerDoc) =
-  PP.renderStyle PP.style{ PP.lineLength = 80 } showerDoc
+  PP.renderStyle PP.style{ PP.lineLength = 80 } showerDoc ++ "\n"
