@@ -10,12 +10,18 @@ import Data.Foldable
 import Data.Traversable
 import Control.Monad
 
+import Control.Exception (evaluate)
+
 import System.Directory
 import System.FilePath
+import System.Process
+import System.IO
+import System.IO.Temp
 import System.Exit
 
 import Test.Tasty
 import Test.Tasty.HUnit
+import Test.Tasty.Golden.Advanced
 
 import Shower
 
@@ -45,15 +51,11 @@ mkInOutTests = do
       testCases <- for (Map.toList zippedPaths) $
         \(testName, InOut inFilePath outFilePath) -> do
           inFile <- readFile inFilePath
-          outFile <- readFile outFilePath
-          return $ testCase testName $
-            case showerString inFile of
-              Left parseError -> assertFailure parseError
-              Right s -> assertEqual "" (normalize outFile) (normalize s)
+          got <- case showerString inFile of
+            Left parseError -> assertFailure parseError
+            Right s -> pure s
+          pure $ diffTest testName outFilePath got
       return (testGroup "in/out" testCases)
-
-normalize :: String -> String
-normalize = unlines . lines
 
 data ZipInOutFail =
   ZipInOutFail
@@ -96,3 +98,30 @@ zipInOutFilePaths filePaths =
           ".in"  -> go (accBadExt, (name, p) : accInExt, accOutExt) ps
           ".out" -> go (accBadExt, accInExt, (name, p) : accOutExt) ps
           _ -> go (p:accBadExt, accInExt, accOutExt) ps
+
+-- | Output differences between a file and a string using @git diff@.
+diffTest
+  :: TestName
+  -> FilePath  -- ^ Expected ".out" file
+  -> String    -- ^ Actual output
+  -> TestTree
+diffTest name ref got =
+  goldenTest
+    name
+    (readFile ref)
+    (pure got)
+    cmp
+    (writeFile ref)
+  where
+  template = takeFileName ref <.> "actual"
+  diffParams = ["--no-index", "--color", "--word-diff-regex=."]
+  cmp _ actual = withSystemTempFile template $ \tmpFile tmpHandle -> do
+    hPutStr tmpHandle actual >> hFlush tmpHandle
+    let cmd = proc "git" (["diff"] ++ diffParams ++ [ref, tmpFile])
+    (_, Just sout, _, pid) <- createProcess cmd { std_out = CreatePipe }
+    out <- hGetContents sout
+    _ <- evaluate . length $ out
+    r <- waitForProcess pid
+    return $ case r of
+      ExitSuccess -> Nothing
+      _ -> Just (unlines . drop 4 . lines $ out)  -- drop diff header
