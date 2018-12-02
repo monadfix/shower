@@ -10,8 +10,6 @@ import Data.Foldable
 import Data.Traversable
 import Control.Monad
 
-import Control.Exception (evaluate)
-
 import System.Directory
 import System.FilePath
 import System.Process
@@ -117,11 +115,8 @@ diffTest name ref got =
   diffParams = ["--no-index", "--color", "--word-diff-regex=."]
   cmp _ actual = withSystemTempFile template $ \tmpFile tmpHandle -> do
     hPutStr tmpHandle actual >> hFlush tmpHandle
-    let cmd = proc "git" (["diff"] ++ diffParams ++ [ref, tmpFile])
-    (_, Just sout, _, pid) <- createProcess cmd { std_out = CreatePipe }
-    out <- hGetContents sout
-    _ <- evaluate . length $ out
-    r <- waitForProcess pid
-    return $ case r of
+    let diffProc = proc "git" (["diff"] ++ diffParams ++ [ref, tmpFile])
+    (exitCode, out, _) <- readCreateProcessWithExitCode diffProc ""
+    return $ case exitCode of
       ExitSuccess -> Nothing
       _ -> Just (unlines . drop 4 . lines $ out)  -- drop diff header
