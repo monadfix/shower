@@ -39,7 +39,6 @@ test-suite shower-tests
   build-depends:
     base >=4.10 && <4.13,
     tasty,
-    tasty-hunit,
     tasty-golden,
     containers,
     filepath,

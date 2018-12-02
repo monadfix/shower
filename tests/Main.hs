@@ -10,6 +10,8 @@ import Data.Foldable
 import Data.Traversable
 import Control.Monad
 
+import Control.Exception
+
 import System.Directory
 import System.FilePath
 import System.Process
@@ -18,7 +20,6 @@ import System.IO.Temp
 import System.Exit
 
 import Test.Tasty
-import Test.Tasty.HUnit
 import Test.Tasty.Golden.Advanced
 
 import Shower
@@ -48,10 +49,11 @@ mkInOutTests = do
     Right zippedPaths -> do
       testCases <- for (Map.toList zippedPaths) $
         \(testName, InOut inFilePath outFilePath) -> do
-          inFile <- readFile inFilePath
-          got <- case showerString inFile of
-            Left parseError -> assertFailure parseError
-            Right s -> pure s
+          let got = do
+                inFile <- readFile inFilePath
+                case showerString inFile of
+                  Left parseError -> throwIO (ErrorCall parseError)
+                  Right s -> pure s
           pure $ diffTest testName outFilePath got
       return (testGroup "in/out" testCases)
 
@@ -100,14 +102,14 @@ zipInOutFilePaths filePaths =
 -- | Output differences between a file and a string using @git diff@.
 diffTest
   :: TestName
-  -> FilePath  -- ^ Expected ".out" file
-  -> String    -- ^ Actual output
+  -> FilePath   -- ^ Expected ".out" file
+  -> IO String  -- ^ Actual output
   -> TestTree
 diffTest name ref got =
   goldenTest
     name
     (readFile ref)
-    (pure got)
+    got
     cmp
     (writeFile ref)
   where
