@@ -106,19 +106,14 @@ diffTest
   -> IO String  -- ^ Actual output
   -> TestTree
 diffTest name ref got =
-  goldenTest
-    name
-    (readFile ref)
-    got
-    cmp
-    (writeFile ref)
+  goldenTest name (readFile ref) got cmp (writeFile ref)
   where
-  template = takeFileName ref <.> "actual"
-  diffParams = ["--no-index", "--color", "--word-diff-regex=."]
-  cmp _ actual = withSystemTempFile template $ \tmpFile tmpHandle -> do
-    hPutStr tmpHandle actual >> hFlush tmpHandle
-    let diffProc = proc "git" (["diff"] ++ diffParams ++ [ref, tmpFile])
-    (exitCode, out, _) <- readCreateProcessWithExitCode diffProc ""
-    return $ case exitCode of
-      ExitSuccess -> Nothing
-      _ -> Just (unlines . drop 4 . lines $ out)  -- drop diff header
+    template = takeFileName ref <.> "actual"
+    diffParams = ["--no-index", "--color", "--word-diff-regex=."]
+    cmp _ actual = withSystemTempFile template $ \tmpFile tmpHandle -> do
+      hPutStr tmpHandle actual >> hFlush tmpHandle
+      let diffProc = proc "git" (["diff"] ++ diffParams ++ [ref, tmpFile])
+      (exitCode, out, _) <- readCreateProcessWithExitCode diffProc ""
+      return $ case exitCode of
+        ExitSuccess -> Nothing
+        _ -> Just (unlines . drop 4 . lines $ out)  -- drop diff header
