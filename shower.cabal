@@ -39,10 +39,12 @@ test-suite shower-tests
   build-depends:
     base >=4.10 && <4.13,
     tasty,
-    tasty-hunit,
+    tasty-golden,
     containers,
     filepath,
     directory,
+    process,
+    temporary,
     shower
   hs-source-dirs: tests
   default-language: Haskell2010
