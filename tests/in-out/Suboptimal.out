@@ -1,0 +1,5 @@
+[ ( "Units are widened", ( ) ),
+  ( "Chars are renormalized", '\SOH', '\STX' ),
+  ( "String gaps are broken", "with \\  \\ gaps" ),
+  ( "Unboxed tuples have spaces added", ( # 1, 2 # ) ),
+  ( "Unboxed strings have spaces added", "hello" # ) ]
