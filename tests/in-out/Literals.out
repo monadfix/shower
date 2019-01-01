@@ -1,0 +1,7 @@
+Lits
+  { ints = [ 0, 1895, -74 ],
+    doubles = [ 3.0, NaN, -18.3e-5 ],
+    bases = [ 0b011101, 0x2f3d ],
+    chars = [ 'a', '\\', ']', '\'' ],
+    strings = [ "", "Hi,\n", "\"\"\"" ],
+    unboxed = [ 3# ] }
