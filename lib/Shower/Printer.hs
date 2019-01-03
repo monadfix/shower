@@ -18,20 +18,20 @@ instance Shower ShowerDoc where
 
 showerRecord' :: [(PP.Doc, PP.Doc)] -> PP.Doc
 showerRecord' fields =
-  PP.hsep [PP.lbrace, PP.nest 2 (showerFields fields), PP.rbrace]
+  mconcat [PP.lbrace, PP.nest 2 (showerFields fields), PP.rbrace]
   where
     showerFields = PP.sep . PP.punctuate PP.comma . map showerField
     showerField (name, x) = PP.hang (name PP.<+> PP.equals) 2 x
 
 showerList' :: [PP.Doc] -> PP.Doc
 showerList' elements =
-  PP.hsep [PP.lbrack, PP.nest 2 (showerElements elements), PP.rbrack]
+  mconcat [PP.lbrack, PP.nest 2 (showerElements elements), PP.rbrack]
   where
     showerElements = PP.sep . PP.punctuate PP.comma
 
 showerTuple' :: [PP.Doc] -> PP.Doc
 showerTuple' elements =
-  PP.hsep [PP.lparen, PP.nest 2 (showerElements elements), PP.rparen]
+  mconcat [PP.lparen, PP.nest 2 (showerElements elements), PP.rparen]
   where
     showerElements = PP.sep . PP.punctuate PP.comma
 
