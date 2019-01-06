@@ -2,10 +2,8 @@ module Shower.Parser (pShower) where
 
 import Data.Void
 import Data.Char
-import Data.Maybe
 import Text.Megaparsec
 import Text.Megaparsec.Char
-import Text.Megaparsec.Char.Lexer (charLiteral)
 
 import Shower.Class
 
@@ -61,19 +59,16 @@ pStringLit :: Shower a => Parser a
 pStringLit =
   pLexeme $ do
     _ <- char '"'
-    s <- manyTill pChar (char '"')
-    return (showerStringLit (catMaybes s))
+    s <- manyTill pStringPart (char '"')
+    return (showerStringLit (concat s))
   where
-    pChar =
-      (Just <$> charLiteral) <|>
-      (Nothing <$ string "\\&") <|>
-      (Just <$> anySingle)
+    pStringPart = string "\\\"" <|> ((:[]) <$> anySingle)
 
 pCharLit :: Shower a => Parser a
 pCharLit =
   pLexeme $ try $ do
     _ <- char '\''
-    c <- charLiteral
+    c <- string "\\'" <|> ((:[]) <$> anySingle)
     _ <- char '\''
     return (showerCharLit c)
 
