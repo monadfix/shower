@@ -1,3 +1,1 @@
-[ ( "Chars are renormalized", '\x01', '\x02' ),
-  ( "String gaps are broken", "with \  \ gaps" ),
-  ( "Unboxed strings have spaces added", "hello"# ) ]
+[ ( "Unboxed strings have spaces added", "hello"# ) ]

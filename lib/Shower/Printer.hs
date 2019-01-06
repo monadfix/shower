@@ -43,10 +43,10 @@ showerAtom' :: String -> PP.Doc
 showerAtom' = PP.text
 
 showerStringLit' :: String -> PP.Doc
-showerStringLit' = PP.text . show
+showerStringLit' = PP.doubleQuotes . PP.text
 
-showerCharLit' :: Char -> PP.Doc
-showerCharLit' = PP.text . show
+showerCharLit' :: String -> PP.Doc
+showerCharLit' = PP.quotes . PP.text
 
 showerRender :: ShowerDoc -> String
 showerRender (SD showerDoc) =
