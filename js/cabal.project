@@ -1,0 +1,4 @@
+compiler: ghcjs
+packages:
+  shower-js.cabal
+  ../shower.cabal
