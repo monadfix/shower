@@ -5,7 +5,7 @@ import Reflex.Dom
 import qualified Data.Text as Text
 
 main :: IO ()
-main = mainWidget $ el "div" $ do
+main = mainWidgetInElementById "shower-demo" $ do
     t <- textArea def
     el "pre" (dynText (Text.pack . ppr . Text.unpack <$> _textArea_value t))
 
