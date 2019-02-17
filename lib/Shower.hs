@@ -4,7 +4,7 @@ module Shower
   ) where
 
 import Data.Bifunctor (bimap)
-import Text.Megaparsec (parse, errorBundlePretty)
+import Text.Megaparsec (parse, errorBundlePretty, eof)
 import Shower.Parser (pShower)
 import Shower.Printer (showerRender)
 
@@ -17,4 +17,5 @@ shower a =
     s = show a
 
 showerString :: String -> Either String String
-showerString s = bimap errorBundlePretty showerRender (parse pShower "" s)
+showerString s =
+  bimap errorBundlePretty showerRender (parse (pShower <* eof) "" s)
