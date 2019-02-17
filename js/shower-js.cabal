@@ -8,6 +8,9 @@ category: Development
 build-type: Simple
 cabal-version: >=1.10
 
+data-files:
+  index.html
+
 executable shower-js
   main-is: Main.hs
   build-depends:
