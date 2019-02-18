@@ -1,4 +1,4 @@
-module Shower.Printer where
+module Shower.Printer (ShowerDoc(SD), showerRender) where
 
 import Data.Coerce
 import qualified Text.PrettyPrint as PP
