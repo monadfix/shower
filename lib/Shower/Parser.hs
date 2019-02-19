@@ -55,22 +55,23 @@ pTuple = do
   _ <- pLexeme (char ')')
   return (showerTuple elements)
 
-pStringLit :: Shower a => Parser a
-pStringLit =
+pQuotedLit :: Char -> Parser String
+pQuotedLit quote =
   pLexeme $ do
-    _ <- char '"'
-    s <- manyTill pStringPart (char '"')
-    return (showerStringLit (concat s))
+    _ <- char quote
+    s <- manyTill pSymbol (char quote)
+    return (concat s)
   where
-    pStringPart = string "\\\"" <|> ((:[]) <$> anySingle)
+    pSymbol =
+      string ['\\', '\\']  <|>
+      string ['\\', quote] <|>
+      ((:[]) <$> anySingle)
+
+pStringLit :: Shower a => Parser a
+pStringLit = showerStringLit <$> pQuotedLit '"'
 
 pCharLit :: Shower a => Parser a
-pCharLit =
-  pLexeme $ try $ do
-    _ <- char '\''
-    c <- string "\\'" <|> ((:[]) <$> anySingle)
-    _ <- char '\''
-    return (showerCharLit c)
+pCharLit = showerCharLit <$> pQuotedLit '\''
 
 pAtom :: Shower a => Parser a
 pAtom =
