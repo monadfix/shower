@@ -25,7 +25,7 @@ pPart =
   pTuple <|>
   pStringLit <|>
   pCharLit <|>
-  pAtom
+  pAtom "()[]{},="
 
 pRecord :: Shower a => Parser a
 pRecord = do
@@ -34,12 +34,19 @@ pRecord = do
   _ <- pLexeme (char '}')
   return (showerRecord fields)
 
-pField :: Shower a => Parser (a, a)
+pFieldName :: Shower a => Parser a
+pFieldName =
+  pStringLit <|>
+  pAtom "()[]{},=:"
+
+pField :: Shower a => Parser (a, ShowerFieldSep, a)
 pField = do
-  name <- pExpr
-  _ <- pLexeme (char '=')
+  name <- pFieldName
+  sep <- pLexeme $
+    ShowerFieldSepEquals <$ char '=' <|>
+    ShowerFieldSepColon  <$ char ':'
   value <- pExpr
-  return (name, value)
+  return (name, sep, value)
 
 pList :: Shower a => Parser a
 pList = do
@@ -73,12 +80,12 @@ pStringLit = showerStringLit <$> pQuotedLit '"'
 pCharLit :: Shower a => Parser a
 pCharLit = showerCharLit <$> pQuotedLit '\''
 
-pAtom :: Shower a => Parser a
-pAtom =
+pAtom :: Shower a => [Char] -> Parser a
+pAtom disallowed =
   pLexeme $ do
     s <- some (satisfy atomChar)
     return (showerAtom s)
   where
     atomChar c =
-      not (c `elem` "()[]{},=") &&
+      not (c `elem` disallowed) &&
       not (isSpace c)

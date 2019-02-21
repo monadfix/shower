@@ -6,7 +6,8 @@ module Shower.Class where
 -- strings to avoid losing information (e.g. @"\\n"@ vs. @"\\10"@).
 class Shower a where
   -- { x = 24, y = 42 }
-  showerRecord :: [(a, a)] -> a
+  -- { "a": null, "b": 13 }
+  showerRecord :: [(a, ShowerFieldSep, a)] -> a
   -- [1, 2, 3]
   showerList :: [a] -> a
   -- (1, 2, 3)
@@ -19,3 +20,6 @@ class Shower a where
   showerAtom :: String -> a
   -- whitespace-separated
   showerSpace :: [a] -> a
+
+data ShowerFieldSep =
+  ShowerFieldSepEquals | ShowerFieldSepColon

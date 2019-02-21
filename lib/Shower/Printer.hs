@@ -16,12 +16,14 @@ instance Shower ShowerDoc where
   showerSpace = coerce showerSpace'
   showerAtom = coerce showerAtom'
 
-showerRecord' :: [(PP.Doc, PP.Doc)] -> PP.Doc
+showerRecord' :: [(PP.Doc, ShowerFieldSep, PP.Doc)] -> PP.Doc
 showerRecord' fields =
   PP.braces (PP.nest 2 (showerFields fields))
   where
     showerFields = PP.sep . PP.punctuate PP.comma . map showerField
-    showerField (name, x) = PP.hang (name PP.<+> PP.equals) 2 x
+    showerField (name, sep, x) = PP.hang (ppSep name sep) 2 x
+    ppSep name ShowerFieldSepEquals = name PP.<+> PP.char '='
+    ppSep name ShowerFieldSepColon  = name PP.<>  PP.char ':'
 
 showerList' :: [PP.Doc] -> PP.Doc
 showerList' elements =
