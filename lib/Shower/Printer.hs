@@ -1,3 +1,4 @@
+-- | A @pretty@ implementation of a pretty-printer for 'Shower'.
 module Shower.Printer (ShowerDoc(SD), showerRender) where
 
 import Data.Coerce
@@ -5,6 +6,7 @@ import qualified Text.PrettyPrint as PP
 
 import Shower.Class
 
+-- | A @pretty@ document, with a 'Shower' instance.
 newtype ShowerDoc = SD PP.Doc
 
 instance Shower ShowerDoc where
@@ -59,6 +61,7 @@ showerStringLit' = PP.doubleQuotes . PP.text
 showerCharLit' :: String -> PP.Doc
 showerCharLit' = PP.quotes . PP.text
 
+-- | Render a @ShowerDoc@ with the default style.
 showerRender :: ShowerDoc -> String
 showerRender (SD showerDoc) =
   PP.renderStyle PP.style{ PP.lineLength = 80 } showerDoc ++ "\n"

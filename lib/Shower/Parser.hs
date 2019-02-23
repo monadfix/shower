@@ -1,3 +1,4 @@
+-- | A @megaparsec@ implementation of a parser for 'Shower'.
 module Shower.Parser (pShower) where
 
 import Data.Void
@@ -12,7 +13,8 @@ type Parser = Parsec Void String
 pLexeme :: Parser a -> Parser a
 pLexeme p = p <* space
 
-pShower :: Shower a => Parser a
+-- | Parser for 'Shower' expressions.
+pShower :: Shower a => Parsec Void String a
 pShower = space *> pExpr
 
 pExpr :: Shower a => Parser a
