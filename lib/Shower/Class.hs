@@ -7,11 +7,11 @@ module Shower.Class where
 class Shower a where
   -- { x = 24, y = 42 }
   -- { "a": null, "b": 13 }
-  showerRecord :: [(a, ShowerFieldSep, a)] -> a
+  showerRecord :: [ShowerComma (a, ShowerFieldSep, a)] -> a
   -- [1, 2, 3]
-  showerList :: [a] -> a
+  showerList :: [ShowerComma a] -> a
   -- (1, 2, 3)
-  showerTuple :: [a] -> a
+  showerTuple :: [ShowerComma a] -> a
   -- "hello, (world)"
   showerStringLit :: String -> a
   -- '('
@@ -23,3 +23,6 @@ class Shower a where
 
 data ShowerFieldSep =
   ShowerFieldSepEquals | ShowerFieldSepColon
+
+data ShowerComma a =
+  ShowerCommaSep | ShowerCommaElement a

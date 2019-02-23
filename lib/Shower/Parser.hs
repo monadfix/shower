@@ -18,6 +18,11 @@ pShower = space *> pExpr
 pExpr :: Shower a => Parser a
 pExpr = showerSpace <$> some pPart
 
+pCommaSep :: Parser a -> Parser [ShowerComma a]
+pCommaSep p = many $
+  ShowerCommaSep <$ pLexeme (char ',') <|>
+  ShowerCommaElement <$> p
+
 pPart :: Shower a => Parser a
 pPart =
   pRecord <|>
@@ -30,7 +35,7 @@ pPart =
 pRecord :: Shower a => Parser a
 pRecord = do
   _ <- pLexeme (char '{')
-  fields <- pField `sepBy` pLexeme (char ',')
+  fields <- pCommaSep pField
   _ <- pLexeme (char '}')
   return (showerRecord fields)
 
@@ -51,14 +56,14 @@ pField = do
 pList :: Shower a => Parser a
 pList = do
   _ <- pLexeme (char '[')
-  elements <- pExpr `sepBy` pLexeme (char ',')
+  elements <- pCommaSep pExpr
   _ <- pLexeme (char ']')
   return (showerList elements)
 
 pTuple :: Shower a => Parser a
 pTuple = do
   _ <- pLexeme (char '(')
-  elements <- pExpr `sepBy` pLexeme (char ',')
+  elements <- pCommaSep pExpr
   _ <- pLexeme (char ')')
   return (showerTuple elements)
 
