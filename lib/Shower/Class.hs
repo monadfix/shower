@@ -1,3 +1,9 @@
+{- |
+
+This module defines the representation of data that the parser produces and the
+pretty-printer consumes.
+
+-}
 module Shower.Class where
 
 -- | A tagless final encoding for a result builder (@ShowS@, @Doc@, @Html@, etc).
@@ -5,21 +11,39 @@ module Shower.Class where
 -- Note that 'showerStringLit' and 'showerCharLit' take exact uninterpreted
 -- strings to avoid losing information (e.g. @"\\n"@ vs. @"\\10"@).
 class Shower a where
-  -- { x = 24, y = 42 }
-  -- { "a": null, "b": 13 }
-  showerRecord :: [(a, ShowerFieldSep, a)] -> a
-  -- [1, 2, 3]
-  showerList :: [a] -> a
-  -- (1, 2, 3)
-  showerTuple :: [a] -> a
-  -- "hello, (world)"
+  -- | A record, @{ x = 24, y = 42 }@ or @{ "a": null, "b": 13 }@.
+  showerRecord :: [ShowerComma (a, ShowerFieldSep, a)] -> a
+  -- | A list, @[1, 2, 3]@.
+  showerList :: [ShowerComma a] -> a
+  -- | A tuple, @(1, 2, 3)@.
+  showerTuple :: [ShowerComma a] -> a
+  -- | A string literal, @"hello, (world)"@.
   showerStringLit :: String -> a
-  -- '('
+  -- | A character literal, @'('@.
   showerCharLit :: String -> a
-  -- variable names, numeric literals, etc
+  -- | Variable names, numeric literals, and so on.
   showerAtom :: String -> a
-  -- whitespace-separated
+  -- | Whitespace-separated elements.
   showerSpace :: [a] -> a
 
+-- | A field separator used in records, either @\'=\'@ for Haskell records or
+-- @\':\'@ for JSON.
 data ShowerFieldSep =
-  ShowerFieldSepEquals | ShowerFieldSepColon
+  ShowerFieldSepEquals {- ^ An equality sign, @\'=\'@ -} |
+  ShowerFieldSepColon  {- ^ A colon, @\':\'@ -}
+
+{- | Either a comma or an element.
+
+For example, the tuple section @(,a,,b)@ is represented like this:
+
+@
+[ ShowerCommaSep,
+  ShowerCommaElement "a",
+  ShowerCommaSep,
+  ShowerCommaSep,
+  ShowerCommaElement "b" ]
+@
+-}
+data ShowerComma a =
+  ShowerCommaSep {- ^ A comma, @\',\'@ -} |
+  ShowerCommaElement a {- ^ An element -}
