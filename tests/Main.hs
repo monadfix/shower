@@ -23,12 +23,17 @@ import Test.Tasty
 import Test.Tasty.Golden.Advanced
 
 import Shower
+import Property (propertyTests)
 
 main :: IO ()
 main = do
   inOutTests <- mkInOutTests
   defaultMain $
-    testGroup "Shower" [inOutTests]
+    testGroup "Shower" [inOutTests, propertyTests]
+
+----------------------------------------------------------------------------
+-- Golden tests
+----------------------------------------------------------------------------
 
 mkInOutTests :: IO TestTree
 mkInOutTests = do
