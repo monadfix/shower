@@ -1,5 +1,5 @@
 name: shower
-version: 0.2
+version: 0.2.0.1
 synopsis: Clean up the formatting of 'show' output
 -- description:
 license: BSD3
@@ -12,6 +12,10 @@ cabal-version: >=1.10
 
 homepage: https://monadfix.io/shower
 bug-reports: http://github.com/monadfix/shower/issues
+
+extra-source-files:
+  tests/in-out/*.in
+  tests/in-out/*.out
 
 source-repository head
   type: git
