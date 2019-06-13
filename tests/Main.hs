@@ -104,7 +104,8 @@ zipInOutFilePaths filePaths =
           ".out" -> go (accBadExt, accInExt, (name, p) : accOutExt) ps
           _ -> go (p:accBadExt, accInExt, accOutExt) ps
 
--- | Output differences between a file and a string using @git diff@.
+-- | Output differences between a file and a string. Uses @git diff@ to show
+-- the differences.
 diffTest
   :: TestName
   -> FilePath   -- ^ Expected ".out" file
@@ -115,10 +116,13 @@ diffTest name ref got =
   where
     template = takeFileName ref <.> "actual"
     diffParams = ["--no-index", "--color", "--word-diff-regex=."]
-    cmp _ actual = withSystemTempFile template $ \tmpFile tmpHandle -> do
-      hPutStr tmpHandle actual >> hFlush tmpHandle
-      let diffProc = proc "git" (["diff"] ++ diffParams ++ [ref, tmpFile])
-      (exitCode, out, _) <- readCreateProcessWithExitCode diffProc ""
-      return $ case exitCode of
-        ExitSuccess -> Nothing
-        _ -> Just (unlines . drop 4 . lines $ out)  -- drop diff header
+    cmp expected actual = withSystemTempFile template $ \tmpFile tmpHandle -> do
+      if expected == actual
+        then return Nothing
+        else do
+          hPutStr tmpHandle actual >> hFlush tmpHandle
+          let diffProc = proc "git" (["diff"] ++ diffParams ++ [ref, tmpFile])
+          (exitCode, out, _) <- readCreateProcessWithExitCode diffProc ""
+          return $ case exitCode of
+            ExitSuccess -> Nothing
+            _ -> Just (unlines . drop 4 . lines $ out)  -- drop diff header
