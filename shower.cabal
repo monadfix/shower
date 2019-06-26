@@ -5,12 +5,12 @@ synopsis: Clean up the formatting of 'show' output
 license: BSD3
 license-file: LICENSE
 author: Vladislav Zavialov
-maintainer: Monadfix <hi@monadfix.io>
+maintainer: Monadfix <hi@monadfix.com>
 category: Development
 build-type: Simple
 cabal-version: >=1.10
 
-homepage: https://monadfix.io/shower
+homepage: https://monadfix.com/shower
 bug-reports: http://github.com/monadfix/shower/issues
 
 extra-source-files:
