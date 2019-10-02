@@ -1,9 +1,9 @@
 language: nix
 
 env:
-  - HC=ghc822
   # - HC=ghc844 # upstream issues
   - HC=ghc865
+  - HC=ghc881
 
 before_install:
   - curl https://raw.githubusercontent.com/monadfix/nix-cabal/master/nix-cabal -o nix-cabal && chmod u+x nix-cabal
