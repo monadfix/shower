@@ -1,7 +1,6 @@
 language: nix
 
 env:
-  - HC=ghc822
   # - HC=ghc844 # upstream issues
   - HC=ghc865
   - HC=ghc881
