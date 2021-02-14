@@ -1,6 +1,6 @@
 # Shower
 
-[![Build Status](https://img.shields.io/travis/monadfix/shower.svg)](https://travis-ci.org/monadfix/shower)
+[![Build Status](https://github.com/monadfix/shower/workflows/CI/badge.svg)](https://github.com/monadfix/shower/actions)
 [![Hackage](https://img.shields.io/hackage/v/shower.svg)](https://hackage.haskell.org/package/shower)
 
 Shower is a utility to format the output of derived
