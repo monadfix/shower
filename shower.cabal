@@ -1,5 +1,5 @@
 name: shower
-version: 0.2.0.3
+version: 0.2.0.4
 synopsis: Clean up the formatting of 'show' output
 -- description:
 license: BSD3
@@ -24,6 +24,7 @@ source-repository head
 library
   exposed-modules:
     Shower
+    Shower.Trace
     Shower.Printer
     Shower.Parser
     Shower.Class
