@@ -29,7 +29,7 @@ library
     Shower.Parser
     Shower.Class
   build-depends:
-    base >=4.10 && <4.21,
+    base >=4.10 && <4.22,
     megaparsec,
     pretty
   hs-source-dirs: lib
