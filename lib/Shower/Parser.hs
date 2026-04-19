@@ -32,7 +32,7 @@ pPart =
   pTuple <|>
   pStringLit <|>
   pCharLit <|>
-  pAtom "()[]{},="
+  pAtom "()[]{},"
 
 pRecord :: Shower a => Parser a
 pRecord = do
