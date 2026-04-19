@@ -1,0 +1,5 @@
+["x" := Lit 9,
+ "y" := Lit 29,
+ "x" := Lit (-1),
+ "z" := (Var "z" :+ Var "v"),
+ "t" := (Lit 1 :+ (Lit 2 :+ Var "u"))]
